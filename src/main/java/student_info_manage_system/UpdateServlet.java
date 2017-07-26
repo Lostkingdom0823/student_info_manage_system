@@ -1,6 +1,8 @@
 package student_info_manage_system;
 
 import java.io.IOException;
+
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +19,10 @@ public class UpdateServlet extends HttpServlet{
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		String studentId = request.getParameter("id");
 		String studentName = new String(request.getParameter("name").getBytes("iso-8859-1"), "utf-8"); 
 		String studentBirthday  = request.getParameter("birthday");
-		String studentDescription = request.getParameter("description");
+		String studentDescription =new String(request.getParameter("description").getBytes("iso-8859-1"),"utf-8");
 		double studentAvgScore = Double.parseDouble(request.getParameter("avgScore"));
 		
 		StudentInfo studentInfo = new StudentInfo(studentName, studentBirthday, studentDescription, studentAvgScore);
@@ -33,13 +34,14 @@ public class UpdateServlet extends HttpServlet{
 		else {
 			jedis.zadd("sorted_id", studentAvgScore, studentId);
 			jedis.hset("student_info", studentId, jsonObject.toString());
-			response.sendRedirect("http://localhost:8585/student_info_manage_system/manage.jsp?contentPage=1");
+			response.sendRedirect("http://119.23.32.233:8888/student_info_manage_system/manage.jsp?contentPage=1");
 		}
 	}
 
 	@Override
-	public void init() throws ServletException {
-		super.init();
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
 	}
+	
 	
 }

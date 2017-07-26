@@ -1,9 +1,6 @@
 package student_info_manage_system;
 
 public class StudentInfo {
-	public void setAvgScore(double avgScore) {
-		this.avgScore = avgScore;
-	}
 
 	private String name;
 	private String birthday;
@@ -38,7 +35,7 @@ public class StudentInfo {
 		return avgScore;
 	}
 
-	public void setAvgScore(float avgScore) {
+	public void setAvgScore(double avgScore) {
 		this.avgScore = avgScore;
 	}
 

@@ -111,6 +111,7 @@ table {
 			
 		}
 		else {
+			alert($("input[name$='description']").val());
 			$("#submitInfo").submit();
 		}
 	}
@@ -122,7 +123,7 @@ table {
 		$("#updateInfo").remove();
 	}
 </script>
-<title>Insert title here</title>
+<title>学生数据管理系统</title>
 </head>
 <body>
 	<%!
@@ -148,19 +149,19 @@ table {
 	void getIdList(int contentPage, Jedis jedis, Set<String> idList) {
 		idList.clear();
 		idList.addAll(jedis.zrevrange("sorted_id", (contentPage - 1) * 10, contentPage * 10-1));
-	}%>
-	<%
-		if(request.getParameter("contentPage")==null){
-			contentPage=1;
-		}
-		else{
-			contentPage=Integer.parseInt(request.getParameter("contentPage"));
-		}
-		maxPage = ((jedis.zcount("sorted_id", 0, 1000) - 1)/ 10) + 1;
-		getIdList(contentPage, jedis, idList);
-		students = setStudentInfo(idList, jedis);
+	}
 	%>
-	<p><%= maxPage %></p>
+	<%
+	if(request.getParameter("contentPage")==null){
+		contentPage=1;
+	}
+	else{
+		contentPage=Integer.parseInt(request.getParameter("contentPage"));
+	}
+	maxPage = ((jedis.zcount("sorted_id", 0, 1000) - 1)/ 10) + 1;
+	getIdList(contentPage, jedis, idList);
+	students = setStudentInfo(idList, jedis);
+	%>
 	<div>
 		<input type="button" value="新建一条数据" onclick="newInfo()" />
 		<table>
@@ -173,10 +174,10 @@ table {
 				<td>options</td>
 			</tr>
 			<%
-				Iterator<String> idIterator = idList.iterator();
-				int count = 0;
-				for (int i = 0; i < 10; i++) {
-					if (idIterator.hasNext()) {
+			Iterator<String> idIterator = idList.iterator();
+			int count = 0;
+			for (int i = 0; i < 10; i++) {
+				if (idIterator.hasNext()) {
 			%>
 			<tr id="<%=count + 1%>">
 				<td id=><%=idIterator.next()%></td>
@@ -187,11 +188,11 @@ table {
 				<td><a href="#" style="margin-right: 20px" value="update">修改</a><a href="#" value="delete">删除</a></td>
 			</tr>
 			<%
-						count++;
-					} 
-					else
-						break;
-				}
+					count++;
+				} 
+				else
+					break;
+			}
 			%>
 		</table>
 	</div>
@@ -203,22 +204,22 @@ table {
 		<p style="display:inline;margin:10px">…</p>
 		<%
 		}
-			for(int i = contentPage-2 ; i <= contentPage+2 ; i++){
-				if(i<=1)
-					continue;
-				if(i==maxPage){
-					break;
-				}
+		for(int i = contentPage-2 ; i <= contentPage+2 ; i++){
+			if(i<=1)
+				continue;
+			if(i==maxPage){
+				break;
+			}
 		%>
 			<a href="" value="pages" style="margin:10px"><%=i %></a>
 		
 		<%
-			}
-		    if((contentPage+2)<(maxPage-1)){
+		}
+	    if((contentPage+2)<(maxPage-1)){
 		%>
 		    	<p style="display:inline;margin:10px">…</p>
 		<%
-		    }
+		}
 		%>
 			<a href="" value="pages" style="margin:10px"><%=maxPage %></a>
 	</div>
@@ -227,7 +228,7 @@ table {
 		$("a[value$='pages']").click(function(){
 			var $contentPage = $(this).html();
 			var timeStamp=new Date().getTime();
-			var url = "http://localhost:8585/student_info_manage_system/manage.jsp?contentPage="+$contentPage+"&timestamp="+timeStamp;
+			var url = "http://119.23.32.233:8888/student_info_manage_system/manage.jsp?contentPage="+$contentPage+"&timestamp="+timeStamp;
 			$(this).attr("href",url);
 		});
 		
@@ -236,7 +237,7 @@ table {
 			var $raw = $(this).parent().parent().attr('id');
 			var $id = $("#"+$raw+">td").eq(0).html();
 			if(confirm("确认删除这条数据吗？")){
-				var $form = $("<form action=\"http://localhost:8585/student_info_manage_system/deleteinfo\" method=\"Post\" id=\"submitInfo\"><form/>");
+				var $form = $("<form action=\"http://119.23.32.233:8888/student_info_manage_system/deleteinfo\" method=\"Post\" id=\"submitInfo\"><form/>");
 				$("#submitInfo").css("display",'none');
 				$("body").append($form);
 				var $idTextarea = $("<input type=\"text\" name=\"id\" value=\""+$id+"\"/>");
@@ -252,7 +253,7 @@ table {
 			if (!$("#updateInfo").length > 0) {
 				var $div = $("<div id=\"updateInfo\"></div>")
 				$(document.body).append($div);
-				var $form = $("<form action=\"http://localhost:8585/student_info_manage_system/updateinfo\" method=\"Post\" id=\"submitInfo\"><form/>");
+				var $form = $("<form action=\"http://119.23.32.233:8888/student_info_manage_system/updateinfo\" method=\"Post\" id=\"submitInfo\"><form/>");
 				$("#updateInfo").append($form);
 				$("form").append("<p>student id\:</p>");
 				$("form").append("<input type=\"text\" name=\"id\"/>");
@@ -279,9 +280,6 @@ table {
 					if ($(this).val() == "") {
 						alert("请输入学生姓名！");
 						$(this).val("");
-					}
-					else if($(this).val().length>40){
-						alert("您输入的信息过长！");
 					}
 				});
 

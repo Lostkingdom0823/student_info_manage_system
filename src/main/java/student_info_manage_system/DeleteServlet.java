@@ -1,6 +1,8 @@
 package student_info_manage_system;
 
 import java.io.IOException;
+
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,18 +26,17 @@ public class DeleteServlet extends HttpServlet{
 		Jedis jedis =new Jedis("119.23.32.233",6379);
 		if(jedis.hdel("student_info", studentId)==1){
 			if(jedis.zrem("sorted_id", studentId)==1){
-				response.sendRedirect("http://localhost:8585/student_info_manage_system/manage.jsp?contentPage=1");
+				response.sendRedirect("http://119.23.32.233:8888/student_info_manage_system/manage.jsp?contentPage=1");
 			}
 		}
 		else {
-			response.sendRedirect("http://localhost:8585/student_info_manage_system/manage.jsp");
+			response.sendRedirect("http://119.23.32.233:8888/student_info_manage_system/manage.jsp");
 		}
 	}
 
 	@Override
-	public void init() throws ServletException {
-		// TODO Auto-generated method stub
-		super.init();
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
 	}
 	
 }
